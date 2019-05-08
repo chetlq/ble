@@ -139,7 +139,13 @@ public class BatteryDetectorActivity extends AppCompatActivity {
                                 append(user.getBeforeMin()).append("/");
                         mBluetoothLEService.writeCharacteristic(mNotifyCharacteristic,sb.toString());
                     }
-                    mBluetoothLEService.disconnect();
+                    try {
+                        Thread.sleep(500);
+                        mBluetoothLEService.disconnect();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             } else if (BluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLEService.EXTRA_DATA));
@@ -154,6 +160,7 @@ public class BatteryDetectorActivity extends AppCompatActivity {
             bluetoothDevice = result.getDevice();
             deviceAddress.setText(bluetoothDevice.getAddress());
             deviceName.setText(bluetoothDevice.getName());
+            Log.d(TAG, "onScanResult " + bluetoothDevice.getAddress());
             progressBar.setVisibility(View.INVISIBLE);
             if (bluetoothDevice != null) {
                         progressBar.setVisibility(View.VISIBLE);
@@ -240,9 +247,10 @@ public class BatteryDetectorActivity extends AppCompatActivity {
             }
         });
 
-//        connectService.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        connectService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBluetoothLEService.connect(bluetoothDevice.getAddress());
 //                if (mNotifyCharacteristic != null) {
 //                    final int charaProp = mNotifyCharacteristic.getProperties();
 ////                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
@@ -261,8 +269,8 @@ public class BatteryDetectorActivity extends AppCompatActivity {
 //                        mBluetoothLEService.writeCharacteristic(mNotifyCharacteristic,sb.toString());
 //                    }
 //                }
-//            }
-//        });
+            }
+        });
     }
 
     @Override
