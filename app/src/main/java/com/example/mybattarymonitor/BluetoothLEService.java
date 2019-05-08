@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.Binder;
@@ -15,6 +16,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -184,6 +186,16 @@ public class BluetoothLEService extends Service {
         mBluetoothGatt.close();
         mBluetoothGatt = null;
     }
+    public boolean getConnected() {
+        if (mBluetoothGatt == null) {
+            return false;
+        }
+        String s =  mBluetoothGatt.getDevice().getAddress();
+
+        final BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(s);
+        mBluetoothGatt.getConnectionState(bluetoothDevice);
+        return s!="";
+    }
 
     public void disconnect() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
@@ -201,15 +213,15 @@ public class BluetoothLEService extends Service {
 
     public boolean connect(@NonNull String address) {
         //Try to use existing connection
-//        if (mBluetoothAdapter != null && address.equals(bluetoothAddress) && mBluetoothGatt != null) {
-//            if (mBluetoothGatt.connect()) {
-//                mConnectionState = STATE_CONNECTING;
-//                Log.w(TAG, "connect true");
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
+        if (mBluetoothAdapter != null && address.equals(bluetoothAddress) && mBluetoothGatt != null) {
+            if (mBluetoothGatt.connect()) {
+                mConnectionState = STATE_CONNECTING;
+                Log.w(TAG, "connect true");
+                return true;
+            } else {
+                return false;
+            }
+        }
         final BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(address);
         if (bluetoothDevice == null) {
             Log.w(TAG, "Device not found");
@@ -220,12 +232,12 @@ public class BluetoothLEService extends Service {
         bluetoothAddress = address;
         mConnectionState = STATE_CONNECTING;
         Log.w(TAG, "connect true");
-        try {
-            Thread.sleep(1500);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(1500);
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return true;
     }
 
@@ -241,12 +253,12 @@ public class BluetoothLEService extends Service {
 //        bluetoothGattCharacteristic.setWriteType();
         bluetoothGattCharacteristic.setValue(s);
         mBluetoothGatt.writeCharacteristic(bluetoothGattCharacteristic);
-        try {
-            Thread.sleep(500);
-            this.disconnect();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(500);
+//            this.disconnect();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

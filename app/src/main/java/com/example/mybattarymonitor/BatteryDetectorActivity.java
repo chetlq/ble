@@ -140,7 +140,7 @@ public class BatteryDetectorActivity extends AppCompatActivity {
                         mBluetoothLEService.writeCharacteristic(mNotifyCharacteristic,sb.toString());
                     }
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(5000);
                         mBluetoothLEService.disconnect();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -250,7 +250,10 @@ public class BatteryDetectorActivity extends AppCompatActivity {
         connectService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBluetoothLEService.connect(bluetoothDevice.getAddress());
+//                mBluetoothLEService.connect(bluetoothDevice.getAddress());
+                Log.d(TAG, "Connect request result>>=" + mBluetoothLEService.getConnected());
+
+
 //                if (mNotifyCharacteristic != null) {
 //                    final int charaProp = mNotifyCharacteristic.getProperties();
 ////                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
